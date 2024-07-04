@@ -92,7 +92,7 @@
     <div class="container">
         <div id="message"></div>
         <input type="text" id="textInput" placeholder="Enter text here">
-        <button onclick="hashOnly()">Hash Only</button>
+        <button id="hashButton" onclick="hashOnly()">Hash Only</button>
         <div id="hashOutput"></div>
         <button id="copyButton" onclick="copyHash()" style="display:none;">Copy Hash</button>
     </div>
@@ -114,6 +114,8 @@
             document.getElementById('hashOutput').textContent = hashHex;
             document.getElementById('copyButton').style.display = 'block';
             document.getElementById('textInput').value = '';
+            document.getElementById('textInput').style.display = 'none';
+            document.getElementById('hashButton').style.display = 'none';
             document.getElementById('message').textContent = 'Hash generated successfully!';
             document.getElementById('message').classList.add('show');
             setTimeout(() => {
