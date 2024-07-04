@@ -89,20 +89,27 @@
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
             // Copy to clipboard
-            navigator.clipboard.writeText(hashHex).then(() => {
-                document.getElementById('message').textContent = 'Hashed text copied to clipboard!';
+            const textArea = document.createElement('textarea');
+            textArea.value = hashHex;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                const message = successful ? 'Hashed text copied to clipboard!' : 'Failed to copy text to clipboard.';
+                document.getElementById('message').textContent = message;
                 document.getElementById('message').classList.add('show');
                 setTimeout(() => {
                     document.getElementById('message').classList.remove('show');
                 }, 3000);
                 document.getElementById('textInput').value = '';
-            }, () => {
+            } catch (err) {
                 document.getElementById('message').textContent = 'Failed to copy text to clipboard.';
                 document.getElementById('message').classList.add('show');
                 setTimeout(() => {
                     document.getElementById('message').classList.remove('show');
                 }, 3000);
-            });
+            }
+            document.body.removeChild(textArea);
         }
     </script>
 </body>
