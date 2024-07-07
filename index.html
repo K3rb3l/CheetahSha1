@@ -92,7 +92,7 @@
     <div class="container">
         <div id="message"></div>
         <input type="text" id="textInput" placeholder="Enter text here">
-        <button id="hashButton" onclick="hashOnly()">Hash Please</button>
+        <button id="hashButton" onclick="hashOnly()">Hash Only</button>
         <div id="hashOutput"></div>
         <button id="copyButton" onclick="copyHash()" style="display:none;">Copy Hash</button>
     </div>
@@ -103,10 +103,27 @@
             const salt = 'cheetah';
             const saltedText = textInput + salt;
 
-            // Create SHA1 hash
+            // Create PBKDF2 hash
             const encoder = new TextEncoder();
             const data = encoder.encode(saltedText);
-            const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+            const saltBuffer = encoder.encode(salt);
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                data,
+                { name: 'PBKDF2' },
+                false,
+                ['deriveBits']
+            );
+            const hashBuffer = await crypto.subtle.deriveBits(
+                {
+                    name: 'PBKDF2',
+                    salt: saltBuffer,
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                256
+            );
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
